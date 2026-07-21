@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Konversi Angka Kredit (AK) Dosen - BKN & UGM Precision Template</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ExcelJS Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Custom Scrollbars for Beautiful UI */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Simulated sheet grid styling */
+        .sheet-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, #e2e8f0 1px, transparent 1px), linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+        }
+        /* Print Styles */
+        @media print {
+            header, .lg\:col-span-5, #toast_container, .no-print {
+                display: none !important;
+            }
+            main {
+                display: block !important;
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+            .lg\:col-span-7 {
+                width: 100% !important;
+            }
+            .sheet-grid {
+                background: none !important;
+            }
+            .print-area {
+                box-shadow: none !important;
+                border: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white">
+
+    <!-- NAVIGATION BAR -->
+    <header class="bg-gradient-to-r from-blue-950 via-indigo-950 to-slate-900 text-white shadow-lg sticky top-0 z-50 border-b border-indigo-900/40 no-print">
+        <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-br from-blue-600 to-indigo-700 p-2.5 rounded-xl text-white shadow-md flex items-center justify-center">
+                    <i class="fa-solid fa-calculator text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight flex items-center gap-2">
+                        <span>Sistem Konversi Angka Kredit (AK) Dosen</span>
+                        <span class="text-[10px] bg-blue-500/20 text-blue-300 font-semibold px-2 py-0.5 rounded-full border border-blue-400/30">PermenPAN-RB & BKN</span>
+                    </h1>
+                    <p class="text-xs text-blue-200">Format Presisi Luaran Resmi Berkas "Template Konversi.xlsx"</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="loadPresetData()" class="bg-blue-800 hover:bg-blue-700 text-white font-semibold py-1.5 px-3.5 rounded-lg text-sm transition-all flex items-center gap-2 border border-blue-600 shadow-sm active:scale-95">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i>
+                    <span>Isi Demo Dr. Bachtiar</span>
+                </button>
+                <span class="text-xs bg-slate-800 text-slate-300 py-1.5 px-3 rounded-lg border border-slate-700 font-mono">v3.0 Live-Sync</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        <!-- LEFT COLUMN: INPUT FORMS (5 COLS) -->
+        <div class="lg:col-span-5 space-y-6">
+
+            <!-- FORM CARD 1: KETERANGAN PERORANGAN PEGAWAI -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-md">
+                <div class="bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-user-tie text-blue-600"></i>
+                        <h2 class="font-bold text-slate-700 tracking-tight">A. Keterangan Perorangan Pegawai</h2>
+                    </div>
+                    <span class="text-xs bg-blue-100 text-blue-800 font-semibold px-2.5 py-0.5 rounded-full">Dosen</span>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Nama Pegawai</label>
+                        <input type="text" id="pegawai_nama" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" placeholder="Nama Lengkap Dosen (termasuk Gelar)">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">NIP Pegawai</label>
+                            <input type="text" id="pegawai_nip" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" placeholder="Nomor Induk Pegawai">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Nomor Seri KARPEG</label>
+                            <input type="text" id="pegawai_karpeg" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" placeholder="Nomor Kartu Pegawai">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Tempat / Tanggal Lahir</label>
+                            <input type="text" id="pegawai_ttl" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" placeholder="TEMPAT / YYYY-MM-DD">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Jenis Kelamin</label>
+                            <select id="pegawai_jk" onchange="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                                <option value="L">Laki-Laki (L)</option>
+                                <option value="P">Perempuan (P)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Pangkat / Golongan Ruang / TMT</label>
+                        <input type="text" id="pegawai_pangkat" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" placeholder="Penata / III/C / 1 April 2022">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Jabatan Fungsional / TMT</label>
+                        <input type="text" id="pegawai_jabfung" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" placeholder="Lektor / 1 Juni 2022">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Unit Kerja / PTN</label>
+                        <input type="text" id="pegawai_ptn" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" placeholder="Universitas Gadjah Mada">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Fakultas / Departemen</label>
+                        <input type="text" id="pegawai_fakultas" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" placeholder="Fakultas Geografi UGM / Dept. Geografi Lingkungan">
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORM CARD 2: PARAMETER SURAT & PEJABAT PENILAI -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-md">
+                <div class="bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-file-signature text-emerald-600"></i>
+                        <h2 class="font-bold text-slate-700 tracking-tight">B. Parameter Surat & Pejabat Penilai</h2>
+                    </div>
+                    <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-0.5 rounded-full">Administrasi</span>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">No. Surat Sheet 1 (Konversi)</label>
+                            <input type="text" id="surat_no1" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all" placeholder="No. Surat Konversi">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">No. Surat Sheet 2 (Akumulasi)</label>
+                            <input type="text" id="surat_no2" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all" placeholder="No. Surat Akumulasi">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">No. Surat Sheet 3 (PAK)</label>
+                            <input type="text" id="surat_no3" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all" placeholder="No. Surat PAK">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Kota & Tanggal Penetapan</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" id="surat_tempat" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all" placeholder="Yogyakarta">
+                                <input type="text" id="surat_tanggal" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all" placeholder="22 Januari 2026">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Nama Pejabat Penilai</label>
+                        <input type="text" id="penilai_nama" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all" placeholder="Nama Pejabat Penilai">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">NIP Pejabat Penilai</label>
+                            <input type="text" id="penilai_nip" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all" placeholder="NIP Pejabat Penilai">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Pangkat/Gol. Pejabat</label>
+                            <input type="text" id="penilai_pangkat" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all" placeholder="Pembina Utama Madya / IV/D">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Jabatan Pejabat Penilai</label>
+                        <input type="text" id="penilai_jabatan" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all" placeholder="Dekan / Wakil Rektor">
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORM CARD 3: HISTORI PENILAIAN KINERJA (DYNAMIC ARRAY) -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-md">
+                <div class="bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-clock-rotate-left text-violet-600"></i>
+                        <h2 class="font-bold text-slate-700 tracking-tight">C. Histori Penilaian Kinerja</h2>
+                    </div>
+                    <button type="button" onclick="addEvaluationRow()" class="text-xs bg-violet-600 hover:bg-violet-700 text-white font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1 transition-all active:scale-95 shadow-sm">
+                        <i class="fa-solid fa-plus"></i> Tambah Periode
+                    </button>
+                </div>
+                <div class="p-6 space-y-4">
+                    <!-- Base Metrics (AK Integrasi) -->
+                    <div class="bg-violet-50 p-4 rounded-xl border border-violet-100">
+                        <label class="block text-xs font-bold text-violet-800 mb-1">AK Integrasi Dasar (Lama) - Per 31 Des 2022</label>
+                        <input type="number" step="0.001" id="ak_integrasi_dasar" oninput="liveCalculate()" class="w-full bg-white border border-violet-200 rounded-lg py-2 px-3 text-sm font-bold text-violet-950 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:bg-white transition-all" placeholder="Contoh: 302.500">
+                    </div>
+
+                    <!-- Dynamic Table Evaluation Row -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse min-w-[500px]">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-600 uppercase tracking-wider border-b border-slate-200 text-[10px]">
+                                    <th class="py-2 px-2 font-bold">Thn</th>
+                                    <th class="py-2 px-2 font-bold">Periodik Bulan</th>
+                                    <th class="py-2 px-2 font-bold">Bln</th>
+                                    <th class="py-2 px-2 font-bold">Jabatan</th>
+                                    <th class="py-2 px-2 font-bold">Predikat</th>
+                                    <th class="py-2 px-2 font-bold text-center w-8">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="evaluation_table_body" class="divide-y divide-slate-100">
+                                <!-- Tr generated dynamically in JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORM CARD 4: TARGET KENAIKAN PANGKAT & JENJANG -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-md">
+                <div class="bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-award text-amber-600"></i>
+                        <h2 class="font-bold text-slate-700 tracking-tight">D. Target Kenaikan Pangkat & Jenjang</h2>
+                    </div>
+                    <span class="text-xs bg-amber-100 text-amber-800 font-semibold px-2.5 py-0.5 rounded-full">Target PAK</span>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">AK Min Kenaikan Pangkat</label>
+                            <input type="number" id="target_ak_pangkat" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all" placeholder="400">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">AK Min Kenaikan Jenjang</label>
+                            <input type="number" id="target_ak_jenjang" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all" placeholder="400">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Target Pangkat / Golongan Baru</label>
+                        <input type="text" id="target_pangkat_nama" oninput="liveCalculate()" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all" placeholder="Pembina (IV/a) / Lektor Kepala">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: INTERACTIVE SPREADSHEET SIMULATOR (7 COLS) -->
+        <div class="lg:col-span-7 space-y-6">
+
+            <!-- STATS QUICK COUNTER -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-slate-900 text-white rounded-2xl p-4 shadow-sm border border-slate-800 text-center relative overflow-hidden">
+                    <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">AK Integrasi (Lama)</p>
+                    <div class="text-2xl font-black text-white mt-1 mono-font" id="badge_integrasi">0.000</div>
+                    <div class="text-[10px] text-slate-400 mt-1">Per 31 Des 2022</div>
+                </div>
+                <div class="bg-indigo-950 text-white rounded-2xl p-4 shadow-sm border border-indigo-900 text-center relative overflow-hidden">
+                    <p class="text-[10px] uppercase tracking-wider text-indigo-300 font-bold">AK Konversi Baru</p>
+                    <div class="text-2xl font-black text-emerald-400 mt-1 mono-font" id="badge_konversi">0.000</div>
+                    <div class="text-[10px] text-indigo-300 mt-1" id="badge_periode_count">0 Periode Evaluasi</div>
+                </div>
+                <div class="bg-slate-900 text-white rounded-2xl p-4 shadow-sm border border-slate-800 text-center relative overflow-hidden">
+                    <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Total AK Kumulatif</p>
+                    <div class="text-2xl font-black text-cyan-400 mt-1 mono-font" id="badge_total">0.000</div>
+                    <div class="text-[10px] text-slate-400 mt-1" id="badge_status_pangkat">Target: 400.000</div>
+                </div>
+            </div>
+
+            <!-- EXPORT TRIGGER CARD -->
+            <div class="bg-gradient-to-r from-emerald-800 to-teal-950 text-white rounded-2xl shadow-md p-6 flex flex-col md:flex-row items-center justify-between gap-4 border border-emerald-700/30">
+                <div class="space-y-1 text-center md:text-left">
+                    <h3 class="font-bold text-lg tracking-tight flex items-center gap-2 justify-center md:justify-start">
+                        <i class="fa-solid fa-file-circle-check text-emerald-400"></i>
+                        <span>Ekspor Luaran File Presisi</span>
+                    </h3>
+                    <p class="text-xs text-emerald-200">Menghasilkan dokumen Excel 3-Sheet yang 100% presisi dan identik dengan rujukan resmi BKN / UGM.</p>
+                </div>
+                <button onclick="generateExcelReport()" class="w-full md:w-auto bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2.5 shadow-lg transition-all transform active:scale-95 text-sm whitespace-nowrap">
+                    <i class="fa-solid fa-file-excel text-lg"></i>
+                    <span>Unduh Template_Konversi.xlsx</span>
+                </button>
+            </div>
+
+            <!-- TAB PREVIEW SELECTOR -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden print-area">
+                <div class="border-b border-slate-200 bg-slate-50 flex overflow-x-auto no-print">
+                    <button onclick="setActiveTab(1)" id="tab_btn_1" class="py-3.5 px-5 font-bold text-xs border-b-2 border-blue-600 text-blue-600 uppercase tracking-wider flex items-center gap-2 whitespace-nowrap transition-colors">
+                        <span class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center text-[10px] font-bold">1</span>
+                        1. Konversi Predikat Kinerja
+                    </button>
+                    <button onclick="setActiveTab(2)" id="tab_btn_2" class="py-3.5 px-5 font-semibold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 uppercase tracking-wider flex items-center gap-2 whitespace-nowrap transition-colors">
+                        <span class="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold">2</span>
+                        2. Akumulasi Angka Kredit
+                    </button>
+                    <button onclick="setActiveTab(3)" id="tab_btn_3" class="py-3.5 px-5 font-semibold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 uppercase tracking-wider flex items-center gap-2 whitespace-nowrap transition-colors">
+                        <span class="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold">3</span>
+                        3. Penetapan PAK (Evaluasi)
+                    </button>
+                </div>
+
+                <!-- PREVIEW LAYOUT AREA -->
+                <div class="p-4 bg-slate-100 min-h-[600px] max-h-[750px] overflow-auto relative">
+                    <div class="sheet-grid absolute inset-0 opacity-20 pointer-events-none"></div>
+
+                    <!-- PREVIEW TAB 1: KONVERSI PREDIKAT -->
+                    <div id="tab_panel_1" class="relative bg-white p-6 shadow-sm border border-slate-300 min-w-[700px] text-[11px] font-sans">
+                        <!-- Header Logo & Ministry Title -->
+                        <div class="text-center mb-4">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Logo_of_Ministry_of_Education_and_Culture_of_Republic_of_Indonesia.svg" class="h-20 mx-auto mb-2 bg-transparent object-contain" alt="Logo Kemdiktisaintek" onerror="this.src='https://placehold.co/80x80/transparent/0f172a?text=KEMDIKTISAINTEK'">
+                            <p class="font-bold text-slate-900 text-xs tracking-wider uppercase">KEMENTERIAN PENDIDIKAN TINGGI, SAINS DAN TEKNOLOGI</p>
+                            <p class="font-bold text-slate-900 text-xs tracking-wider uppercase">REPUBLIK INDONESIA</p>
+                        </div>
+                        
+                        <!-- Title Box (Outline Hijau Dihilangkan) -->
+                        <div class="text-center my-4 font-bold text-slate-900 py-2 px-4 max-w-xl mx-auto">
+                            <p class="text-xs sm:text-sm">KONVERSI PREDIKAT KINERJA KE ANGKA KREDIT</p>
+                            <p class="text-xs sm:text-sm">JABATAN FUNGSIONAL DOSEN</p>
+                            <p class="text-xs font-normal" id="v_no1">NOMOR &lt; AGAR DIISI PT &gt;</p>
+                        </div>
+
+                        <!-- Instansi & Periode Block -->
+                        <div class="grid grid-cols-2 text-xs mb-4 max-w-full font-medium text-slate-800">
+                            <div>
+                                <p><span class="font-semibold">Instansi :</span></p>
+                                <p id="v_instansi">Kementerian Pendidikan Tinggi, Sains dan Teknologi</p>
+                            </div>
+                            <div>
+                                <p><span class="font-semibold">Periode :</span></p>
+                                <p id="v_periode">Januari 2025 s.d Desember 2025</p>
+                            </div>
+                        </div>
+
+                        <!-- Main Table Structure -->
+                        <table class="w-full border-2 border-slate-900 text-left text-[11px] border-collapse mb-6">
+                            <thead>
+                                <tr>
+                                    <th colspan="5" class="border border-slate-900 bg-slate-100 py-1.5 text-center font-bold text-slate-900 uppercase">PEJABAT FUNGSIONAL YANG DINILAI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 w-6 text-center font-bold">1</td>
+                                    <td class="border border-slate-900 p-1 w-48 font-bold">Nama</td>
+                                    <td class="border border-slate-900 p-1 w-4 text-center font-bold">:</td>
+                                    <td colspan="2" class="border border-slate-900 p-1 font-bold text-slate-900 uppercase" id="b_nama">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">2</td>
+                                    <td class="border border-slate-900 p-1 font-bold">NIP</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="2" class="border border-slate-900 p-1" id="b_nip">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">3</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Nomor Seri Karpeg</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="2" class="border border-slate-900 p-1" id="b_karpeg">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">4</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Tempat / Tanggal Lahir</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="2" class="border border-slate-900 p-1" id="b_ttl">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">5</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Jenis Kelamin</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="2" class="border border-slate-900 p-1" id="b_jk">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">6</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Pangkat / Golongan Ruang / TMT</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="2" class="border border-slate-900 p-1" id="b_pangkat">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">7</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Jabatan/TMT</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="2" class="border border-slate-900 p-1" id="b_jabfung">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">8</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Unit Kerja</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="2" class="border border-slate-900 p-1" id="b_ptn">-</td>
+                                </tr>
+
+                                <!-- Section 2: Konversi Header -->
+                                <tr>
+                                    <th colspan="5" class="border border-slate-900 bg-slate-100 py-1.5 text-center font-bold text-slate-900 uppercase">KONVERSI PREDIKAT KINERJA KE ANGKA KREDIT</th>
+                                </tr>
+
+                                <!-- Table Subheaders -->
+                                <tr class="text-center font-bold">
+                                    <td colspan="2" class="border border-slate-900 p-1.5 w-1/2">Hasil Penilaian Kinerja</td>
+                                    <td rowspan="2" colspan="2" class="border border-slate-900 p-1.5 align-middle">Koefisien per tahun</td>
+                                    <td rowspan="2" class="border border-slate-900 p-1.5 align-middle">Angka kredit yang didapat<br><span class="font-normal text-[10px]">(kolom 2 x kolom 3)</span></td>
+                                </tr>
+                                <tr class="text-center font-bold">
+                                    <td class="border border-slate-900 p-1.5">PREDIKAT</td>
+                                    <td class="border border-slate-900 p-1.5">PROSENTASE</td>
+                                </tr>
+
+                                <!-- Column Numbers Row -->
+                                <tr class="text-center font-bold bg-slate-200">
+                                    <td class="border border-slate-900 p-1">1</td>
+                                    <td class="border border-slate-900 p-1">2</td>
+                                    <td colspan="2" class="border border-slate-900 p-1">3</td>
+                                    <td class="border border-slate-900 p-1">4</td>
+                                </tr>
+                            </tbody>
+                            <tbody id="v_konversi_table_body">
+                                <!-- Generated by JS -->
+                            </tbody>
+                        </table>
+
+                        <!-- Signature block Sheet 1 -->
+                        <div class="flex justify-end mt-6 text-xs">
+                            <div class="text-left space-y-1 min-w-[240px]">
+                                <p id="v_ttd_ditetapkan">Ditetapkan di Jakarta</p>
+                                <p id="v_ttd_tempat_tgl">Pada tanggal &lt; AGAR DIISI PT &gt;</p>
+                                <br>
+                                <p class="font-bold">Pejabat Penilai Kinerja</p>
+                                <div class="h-16"></div>
+                                <p class="font-bold" id="v_ttd_nama">... &lt; AGAR DIISI PT &gt;</p>
+                                <p id="v_ttd_nip">NIP &lt; AGAR DIISI PT &gt;</p>
+                            </div>
+                        </div>
+
+                        <!-- Footnote Tembusan -->
+                        <div class="mt-8 text-xs text-slate-800">
+                            <p class="font-semibold">Tembusan disampaikan kepada:</p>
+                            <ol class="list-decimal list-inside space-y-0.5 text-slate-700">
+                                <li>Pejabat Fungsional yang bersangkutan</li>
+                                <li>...</li>
+                                <li>dst</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- PREVIEW TAB 2: AKUMULASI ANGKA KREDIT -->
+                    <div id="tab_panel_2" class="relative bg-white p-6 shadow-sm border border-slate-300 min-w-[700px] text-[11px] font-sans hidden">
+                        <!-- Header Logo & Ministry Title -->
+                        <div class="text-center mb-4">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Logo_of_Ministry_of_Education_and_Culture_of_Republic_of_Indonesia.svg" class="h-20 mx-auto mb-2 bg-transparent object-contain" alt="Logo Kemdiktisaintek" onerror="this.src='https://placehold.co/80x80/transparent/0f172a?text=KEMDIKTISAINTEK'">
+                            <p class="font-bold text-slate-900 text-xs tracking-wider uppercase">KEMENTERIAN PENDIDIKAN TINGGI, SAINS DAN TEKNOLOGI</p>
+                            <p class="font-bold text-slate-900 text-xs tracking-wider uppercase">REPUBLIK INDONESIA</p>
+                        </div>
+
+                        <!-- Title Box -->
+                        <div class="text-center my-4 font-bold text-slate-900 py-2 px-4 max-w-xl mx-auto">
+                            <p class="text-xs sm:text-sm">AKUMULASI ANGKA KREDIT</p>
+                            <p class="text-xs sm:text-sm">JABATAN FUNGSIONAL DOSEN</p>
+                            <p class="text-xs font-normal" id="v2_no">NOMOR &lt; AGAR DIISI PT &gt;</p>
+                        </div>
+
+                        <!-- Instansi & Masa Penilaian Block -->
+                        <div class="grid grid-cols-2 text-xs mb-4 max-w-full font-medium text-slate-800">
+                            <div>
+                                <p><span class="font-semibold">Instansi :</span></p>
+                                <p>Kementerian Pendidikan Tinggi, Sains dan Teknologi</p>
+                            </div>
+                            <div>
+                                <p><span class="font-semibold">Masa Penilaian :</span></p>
+                                <p id="v2_masa_penilaian">-</p>
+                            </div>
+                        </div>
+
+                        <!-- Main Table Structure for Akumulasi -->
+                        <table class="w-full border-2 border-slate-900 text-left text-[11px] border-collapse mb-6">
+                            <thead>
+                                <tr>
+                                    <th colspan="6" class="border border-slate-900 bg-slate-100 py-1.5 text-center font-bold text-slate-900 uppercase">PEJABAT FUNGSIONAL YANG DINILAI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 w-6 text-center font-bold">1</td>
+                                    <td class="border border-slate-900 p-1 w-48 font-bold">Nama</td>
+                                    <td class="border border-slate-900 p-1 w-4 text-center font-bold">:</td>
+                                    <td colspan="3" class="border border-slate-900 p-1 font-bold text-slate-900 uppercase" id="b2_nama">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">2</td>
+                                    <td class="border border-slate-900 p-1 font-bold">NIP</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="3" class="border border-slate-900 p-1" id="b2_nip">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">3</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Nomor Seri Karpeg</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="3" class="border border-slate-900 p-1" id="b2_karpeg">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">4</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Tempat / Tanggal Lahir</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="3" class="border border-slate-900 p-1" id="b2_ttl">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">5</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Jenis Kelamin</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="3" class="border border-slate-900 p-1" id="b2_jk">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">6</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Pangkat / Golongan Ruang / TMT</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="3" class="border border-slate-900 p-1" id="b2_pangkat">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">7</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Jabatan/TMT</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="3" class="border border-slate-900 p-1" id="b2_jabfung">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">8</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Unit Kerja</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="3" class="border border-slate-900 p-1" id="b2_ptn">-</td>
+                                </tr>
+
+                                <tr>
+                                    <th colspan="6" class="border border-slate-900 bg-slate-100 py-1.5 text-center font-bold text-slate-900 uppercase">AKUMULASI ANGKA KREDIT</th>
+                                </tr>
+
+                                <tr class="text-center font-bold">
+                                    <td rowspan="2" class="border border-slate-900 p-1.5 align-middle">TAHUN</td>
+                                    <td colspan="4" class="border border-slate-900 p-1.5">HASIL PENILAIAN KINERJA</td>
+                                    <td rowspan="2" class="border border-slate-900 p-1.5 align-middle">ANGKA KREDIT YANG DIPEROLEH</td>
+                                </tr>
+                                <tr class="text-center font-bold">
+                                    <td class="border border-slate-900 p-1.5">PERIODIK</td>
+                                    <td class="border border-slate-900 p-1.5">PREDIKAT</td>
+                                    <td class="border border-slate-900 p-1.5">PROSENTASE</td>
+                                    <td class="border border-slate-900 p-1.5">KOEFISIEN</td>
+                                </tr>
+
+                                <tr class="text-center font-bold bg-slate-200">
+                                    <td class="border border-slate-900 p-1">1</td>
+                                    <td class="border border-slate-900 p-1">2</td>
+                                    <td class="border border-slate-900 p-1">3</td>
+                                    <td class="border border-slate-900 p-1">4</td>
+                                    <td class="border border-slate-900 p-1">5</td>
+                                    <td class="border border-slate-900 p-1">6</td>
+                                </tr>
+                            </tbody>
+                            <tbody id="v2_akumulasi_table_body">
+                                <!-- Generated by JS -->
+                            </tbody>
+                        </table>
+
+                        <!-- Signature block Sheet 2 -->
+                        <div class="flex justify-end mt-6 text-xs">
+                            <div class="text-left space-y-1 min-w-[240px]">
+                                <p id="v2_ttd_ditetapkan">Ditetapkan di Jakarta</p>
+                                <p id="v2_ttd_tempat_tgl">Pada tanggal &lt; AGAR DIISI PT &gt;</p>
+                                <br>
+                                <p class="font-bold">Pejabat Penilai Kinerja</p>
+                                <div class="h-16"></div>
+                                <p class="font-bold" id="v2_ttd_nama">... &lt; AGAR DIISI PT &gt;</p>
+                                <p id="v2_ttd_nip">NIP &lt; AGAR DIISI PT &gt;</p>
+                            </div>
+                        </div>
+
+                        <!-- Footnote Tembusan -->
+                        <div class="mt-8 text-xs text-slate-800">
+                            <p class="font-semibold">Tembusan disampaikan kepada:</p>
+                            <ol class="list-decimal list-inside space-y-0.5 text-slate-700">
+                                <li>Pejabat Fungsional yang bersangkutan</li>
+                                <li>...</li>
+                                <li>dst</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- PREVIEW TAB 3: PENETAPAN PAK (100% REPLICA OF IMAGE_BA67C0) -->
+                    <div id="tab_panel_3" class="relative bg-white p-6 shadow-sm border border-slate-300 min-w-[700px] text-[11px] font-sans hidden">
+                        <!-- Header Logo & Ministry Title -->
+                        <div class="text-center mb-4">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Logo_of_Ministry_of_Education_and_Culture_of_Republic_of_Indonesia.svg" class="h-20 mx-auto mb-2 bg-transparent object-contain" alt="Logo Kemdiktisaintek" onerror="this.src='https://placehold.co/80x80/transparent/0f172a?text=KEMDIKTISAINTEK'">
+                            <p class="font-bold text-slate-900 text-xs tracking-wider uppercase">KEMENTERIAN PENDIDIKAN TINGGI, SAINS DAN TEKNOLOGI</p>
+                            <p class="font-bold text-slate-900 text-xs tracking-wider uppercase">REPUBLIK INDONESIA</p>
+                        </div>
+
+                        <!-- Document Title -->
+                        <div class="text-center my-4 font-bold text-slate-900 leading-tight">
+                            <p class="text-xs sm:text-sm tracking-wide">PENETAPAN ANGKA KREDIT</p>
+                            <p class="text-xs sm:text-sm tracking-wide">JABATAN FUNGSIONAL DOSEN</p>
+                            <p class="text-xs font-semibold mt-0.5" id="v3_no">NOMOR &lt; AGAR DIISI PT &gt;</p>
+                        </div>
+
+                        <!-- Metadata Instansi & Masa Penilaian -->
+                        <div class="grid grid-cols-2 text-xs mb-3 font-medium text-slate-900">
+                            <div>
+                                <p><span class="font-bold">Instansi :</span></p>
+                                <p id="v3_instansi" class="font-bold uppercase">KEMENTERIAN PENDIDIKAN TINGGI, SAINS DAN TEKNOLOGI</p>
+                            </div>
+                            <div>
+                                <p><span class="font-bold">Masa Penilaian :</span></p>
+                                <p id="v3_masa_penilaian" class="font-semibold">-</p>
+                            </div>
+                        </div>
+
+                        <!-- Section I: KETERANGAN PERORANGAN Table -->
+                        <table class="w-full border-2 border-slate-900 text-left text-[11px] border-collapse mb-4">
+                            <thead>
+                                <tr class="border-b-2 border-slate-900 bg-slate-100">
+                                    <th class="border-r border-slate-900 p-1 w-6 text-center font-bold">I</th>
+                                    <th colspan="4" class="p-1 font-bold text-slate-900 uppercase">KETERANGAN PERORANGAN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 w-6 text-center font-bold">1</td>
+                                    <td class="border border-slate-900 p-1 w-48 font-bold">Nama</td>
+                                    <td class="border border-slate-900 p-1 w-4 text-center font-bold">:</td>
+                                    <td colspan="2" class="border border-slate-900 p-1 font-bold text-slate-900 uppercase" id="b3_nama">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">2</td>
+                                    <td class="border border-slate-900 p-1 font-bold">NIP</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="2" class="border border-slate-900 p-1" id="b3_nip">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">3</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Nomor Seri Karpeg</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="2" class="border border-slate-900 p-1" id="b3_karpeg">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">4</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Tempat/Tanggal Lahir</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="2" class="border border-slate-900 p-1" id="b3_ttl">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">5</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Jenis Kelamin</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="2" class="border border-slate-900 p-1" id="b3_jk">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">6</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Pangkat/Golongan Ruang/TMT</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="2" class="border border-slate-900 p-1" id="b3_pangkat">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">7</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Jabatan/TMT</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="2" class="border border-slate-900 p-1" id="b3_jabfung">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">8</td>
+                                    <td class="border border-slate-900 p-1 font-bold">Unit Kerja</td>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">:</td>
+                                    <td colspan="2" class="border border-slate-900 p-1" id="b3_ptn">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Section II: HASIL PENILAIAN ANGKA KREDIT Table -->
+                        <table class="w-full border-2 border-slate-900 text-left text-[11px] border-collapse mb-3">
+                            <thead>
+                                <tr class="bg-slate-100 border-b-2 border-slate-900">
+                                    <th colspan="6" class="p-1 text-center font-bold text-slate-900 uppercase">HASIL PENILAIAN ANGKA KREDIT</th>
+                                </tr>
+                                <tr class="text-center font-bold border-b border-slate-900">
+                                    <td class="border-r border-slate-900 p-1 w-6">II</td>
+                                    <td class="border-r border-slate-900 p-1 text-left">PENETAPAN ANGKA KREDIT</td>
+                                    <td class="border-r border-slate-900 p-1 w-20">LAMA</td>
+                                    <td class="border-r border-slate-900 p-1 w-24">BARU</td>
+                                    <td class="border-r border-slate-900 p-1 w-24">JUMLAH</td>
+                                    <td class="p-1 w-44">KETERANGAN</td>
+                                </tr>
+                                <tr class="text-center font-bold bg-slate-200 border-b border-slate-900">
+                                    <td class="border-r border-slate-900 p-0.5">1</td>
+                                    <td class="border-r border-slate-900 p-0.5">2</td>
+                                    <td class="border-r border-slate-900 p-0.5">3</td>
+                                    <td class="border-r border-slate-900 p-0.5">4</td>
+                                    <td class="border-r border-slate-900 p-0.5">5</td>
+                                    <td class="p-0.5">6</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">1</td>
+                                    <td class="border border-slate-900 p-1 font-semibold">AK Dasar yang diberikan</td>
+                                    <td class="border border-slate-900 p-1 text-center">-</td>
+                                    <td class="border border-slate-900 p-1 text-center">-</td>
+                                    <td class="border border-slate-900 p-1 text-center mono-font">0</td>
+                                    <td class="border border-slate-900 p-1 text-xs"></td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">2</td>
+                                    <td class="border border-slate-900 p-1 font-semibold">AK Integrasi</td>
+                                    <td class="border border-slate-900 p-1 text-center">-</td>
+                                    <td class="border border-slate-900 p-1 text-center">-</td>
+                                    <td class="border border-slate-900 p-1 text-center mono-font">0</td>
+                                    <td class="border border-slate-900 p-1 text-[10px] leading-tight">Sudah menjadi satu dengan AK Konversi</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">3</td>
+                                    <td class="border border-slate-900 p-1 font-semibold">AK Penyesuaian / Penyelarasan</td>
+                                    <td class="border border-slate-900 p-1 text-center">-</td>
+                                    <td class="border border-slate-900 p-1 text-center">-</td>
+                                    <td class="border border-slate-900 p-1 text-center mono-font">0</td>
+                                    <td class="border border-slate-900 p-1 text-xs"></td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">4</td>
+                                    <td class="border border-slate-900 p-1 font-semibold">AK Konversi</td>
+                                    <td class="border border-slate-900 p-1 text-right mono-font" id="v3_ak_konversi_lama">0</td>
+                                    <td class="border border-slate-900 p-1 text-right mono-font" id="v3_ak_konversi_baru">0,000</td>
+                                    <td class="border border-slate-900 p-1 text-right mono-font font-bold" id="v3_ak_konversi_jumlah">0,000</td>
+                                    <td class="border border-slate-900 p-1 text-xs"></td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">5</td>
+                                    <td class="border border-slate-900 p-1 font-semibold">AK yang diperoleh dari peningkatan pendidikan</td>
+                                    <td class="border border-slate-900 p-1 text-center">-</td>
+                                    <td class="border border-slate-900 p-1 text-center">-</td>
+                                    <td class="border border-slate-900 p-1 text-center mono-font">0</td>
+                                    <td class="border border-slate-900 p-1 text-xs"></td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 text-center font-bold">6</td>
+                                    <td class="border border-slate-900 p-1"></td>
+                                    <td class="border border-slate-900 p-1 text-center">-</td>
+                                    <td class="border border-slate-900 p-1 text-center">-</td>
+                                    <td class="border border-slate-900 p-1 text-center mono-font">0</td>
+                                    <td class="border border-slate-900 p-1 text-xs"></td>
+                                </tr>
+                                <tr class="font-bold bg-slate-50">
+                                    <td colspan="2" class="border border-slate-900 p-1 font-black">JUMLAH ANGKA KREDIT</td>
+                                    <td class="border border-slate-900 p-1 text-right mono-font" id="v3_tot_lama">0</td>
+                                    <td class="border border-slate-900 p-1 text-right mono-font" id="v3_tot_baru">0,000</td>
+                                    <td class="border border-slate-900 p-1 text-right mono-font font-black" id="v3_tot_jumlah">0,000</td>
+                                    <td class="border border-slate-900 p-1"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Sub-Table: Evaluation of Limits & Excess/Shortage AK -->
+                        <table class="w-full border-2 border-slate-900 text-left text-[11px] border-collapse mb-4">
+                            <thead>
+                                <tr class="text-center font-bold bg-slate-100 border-b border-slate-900">
+                                    <td class="border-r border-slate-900 p-1 w-1/2">Keterangan</td>
+                                    <td class="border-r border-slate-900 p-1 w-1/4">Pangkat</td>
+                                    <td class="p-1 w-1/4">Jenjang Jabatan</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 font-medium">Angka Kredit Minimal yang harus dipenuhi untuk kenaikan pangkat / jenjang</td>
+                                    <td class="border border-slate-900 p-1 text-center mono-font font-bold" id="v3_req_pangkat">150</td>
+                                    <td class="border border-slate-900 p-1 text-center mono-font font-bold" id="v3_req_jenjang">450</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 font-medium">Kelebihan/Kekurangan Angka Kredit yang harus dicapai untuk kenaikan pangkat</td>
+                                    <td class="border border-slate-900 p-1 text-center mono-font font-bold" id="v3_diff_pangkat">0,000</td>
+                                    <td class="border border-slate-900 p-1 text-center">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-slate-900 p-1 font-medium">Kelebihan/Kekurangan Angka Kredit yang harus dicapai untuk kenaikan jenjang</td>
+                                    <td class="border border-slate-900 p-1 text-center">-</td>
+                                    <td class="border border-slate-900 p-1 text-center mono-font font-bold" id="v3_diff_jenjang">0,000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Recommendation / Decision Text Block -->
+                        <div class="my-4 text-center">
+                            <p class="font-extrabold text-slate-950 text-xs leading-relaxed uppercase" id="v3_decision_text">
+                                DAPAT/TIDAK DAPAT DIPERTIMBANGKAN UNTUK KENAIKAN PANGKAT/JENJANG JABATAN SETINGKAT LEBIH TINGGI MENJADI DOSEN JENJANG LEKTOR KEPALA, PANGKAT/GOLONGAN RUANG PEMBINA TINGKAT I (IV/B)
+                            </p>
+                        </div>
+
+                        <!-- Signature Section Sheet 3 -->
+                        <div class="grid grid-cols-2 mt-6 text-xs font-sans">
+                            <div>
+                                <p class="font-semibold text-slate-800">ASLI Penetapan Angka Kredit untuk</p>
+                                <p class="text-slate-800">Jabatan Fungsional yang bersangkutan</p>
+                            </div>
+                            <div class="text-left pl-12 space-y-1">
+                                <p id="v3_ttd_ditetapkan">Ditetapkan di Jakarta</p>
+                                <p id="v3_ttd_tanggal">Pada tanggal ... Januari 2024</p>
+                                <br>
+                                <p class="font-bold">Pejabat Penilai Kinerja,</p>
+                                <div class="h-16"></div>
+                                <p class="font-bold" id="v3_ttd_nama">....</p>
+                                <p id="v3_ttd_nip">NIP</p>
+                            </div>
+                        </div>
+
+                        <!-- Footnote Tembusan Sheet 3 -->
+                        <div class="mt-8 text-xs text-slate-800">
+                            <p class="font-semibold">Tembusan disampaikan kepada:</p>
+                            <ol class="list-decimal list-inside space-y-0.5 text-slate-700">
+                                <li>Pejabat Fungsional yang bersangkutan</li>
+                                <li>...</li>
+                                <li>dst</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast_container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        // COEFFICIENTS TABLE ACCORDING TO BKN & PERMENPAN-RB FOR LECTURERS
+        const JABATAN_COEFF = {
+            'Asisten Ahli': 12.5,
+            'Lektor': 25.0,
+            'Lektor Kepala': 37.5,
+            'Guru Besar': 50.0,
+            'Profesor': 50.0
+        };
+
+        const PREDIKAT_PERCENT = {
+            'Sangat Baik': 1.25,
+            'Baik': 1.00,
+            'Cukup': 0.75,
+            'Kurang': 0.50,
+            'Sangat Kurang': 0.25
+        };
+
+        // Application State
+        let evaluations = [];
+        let currentTab = 1;
+
+        function setActiveTab(tabIndex) {
+            currentTab = tabIndex;
+            [1, 2, 3].forEach(i => {
+                const panel = document.getElementById(`tab_panel_${i}`);
+                const btn = document.getElementById(`tab_btn_${i}`);
+                if (panel && btn) {
+                    if (i === tabIndex) {
+                        panel.classList.remove('hidden');
+                        btn.classList.add('border-blue-600', 'text-blue-600');
+                        btn.classList.remove('border-transparent', 'text-slate-500');
+                    } else {
+                        panel.classList.add('hidden');
+                        btn.classList.remove('border-blue-600', 'text-blue-600');
+                        btn.classList.add('border-transparent', 'text-slate-500');
+                    }
+                }
+            });
+        }
+
+        window.onload = function() {
+            // Load Demo Data by default for immediate preview visual excellence
+            loadPresetData();
+        };
+
+        // Toast message utility
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast_container');
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? 'bg-slate-900 border-emerald-500 text-white' : 'bg-slate-900 border-blue-500 text-white';
+            const icon = type === 'success' ? 'fa-check-circle text-emerald-400' : 'fa-info-circle text-blue-400';
+
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border text-xs font-semibold transition-all duration-300 transform translate-y-4 opacity-0 ${bgClass}`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-base"></i><span>${message}</span>`;
+            
+            container.appendChild(toast);
+
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
+
+            // Animate out
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function loadPresetData() {
+            document.getElementById('pegawai_nama').value = 'Dr. Bachtiar Wira Utama, M.Sc.';
+            document.getElementById('pegawai_nip').value = '198504122010121003';
+            document.getElementById('pegawai_karpeg').value = 'E.894321';
+            document.getElementById('pegawai_ttl').value = 'Yogyakarta / 12 April 1985';
+            document.getElementById('pegawai_jk').value = 'L';
+            document.getElementById('pegawai_pangkat').value = 'Penata Tk. I / III/d / 1 April 2021';
+            document.getElementById('pegawai_jabfung').value = 'Lektor (300) / 1 Oktober 2021';
+            document.getElementById('pegawai_ptn').value = 'Universitas Gadjah Mada';
+            document.getElementById('pegawai_fakultas').value = 'Fakultas Geografi / Dept. Geografi Lingkungan';
+
+            document.getElementById('surat_no1').value = '102/UN1.FGE/SDM/2026';
+            document.getElementById('surat_no2').value = '103/UN1.FGE/SDM/2026';
+            document.getElementById('surat_no3').value = '104/UN1.FGE/SDM/2026';
+            document.getElementById('surat_tempat').value = 'Yogyakarta';
+            document.getElementById('surat_tanggal').value = '22 Januari 2026';
+
+            document.getElementById('penilai_nama').value = 'Prof. Dr. Danang Sri Hadmoko, M.Sc.';
+            document.getElementById('penilai_nip').value = '197103281997021001';
+            document.getElementById('penilai_pangkat').value = 'Pembina Utama Madya / IV/d';
+            document.getElementById('penilai_jabatan').value = 'Dekan Fakultas Geografi';
+
+            document.getElementById('ak_integrasi_dasar').value = '302.500';
+
+            evaluations = [
+                { id: 1, tahun: '2023', periodik: 'Januari - Desember', bulan: 12, jabatan: 'Lektor', predikat: 'Sangat Baik' },
+                { id: 2, tahun: '2024', periodik: 'Januari - Desember', bulan: 12, jabatan: 'Lektor', predikat: 'Baik' },
+                { id: 3, tahun: '2025', periodik: 'Januari - Desember', bulan: 12, jabatan: 'Lektor', predikat: 'Sangat Baik' }
+            ];
+
+            document.getElementById('target_ak_pangkat').value = '400';
+            document.getElementById('target_ak_jenjang').value = '400';
+            document.getElementById('target_pangkat_nama').value = 'Pembina (IV/a) / Lektor Kepala';
+
+            renderEvaluationRows();
+            liveCalculate();
+            showToast("Data Demo Dr. Bachtiar berhasil dimuat!", "success");
+        }
+
+        function renderEvaluationRows() {
+            const tbody = document.getElementById('evaluation_table_body');
+            tbody.innerHTML = '';
+
+            evaluations.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition-colors';
+                tr.innerHTML = `
+                    <td class="py-2 px-1">
+                        <input type="text" value="${item.tahun}" onchange="updateEvalRow(${index}, 'tahun', this.value)" class="w-full border border-slate-200 rounded px-1.5 py-1 text-xs focus:ring-1 focus:ring-blue-500 font-semibold">
+                    </td>
+                    <td class="py-2 px-1">
+                        <input type="text" value="${item.periodik}" onchange="updateEvalRow(${index}, 'periodik', this.value)" class="w-full border border-slate-200 rounded px-1.5 py-1 text-xs focus:ring-1 focus:ring-blue-500">
+                    </td>
+                    <td class="py-2 px-1">
+                        <input type="number" min="1" max="12" value="${item.bulan}" onchange="updateEvalRow(${index}, 'bulan', this.value)" class="w-12 border border-slate-200 rounded px-1 py-1 text-xs text-center focus:ring-1 focus:ring-blue-500 font-mono">
+                    </td>
+                    <td class="py-2 px-1">
+                        <select onchange="updateEvalRow(${index}, 'jabatan', this.value)" class="w-full border border-slate-200 rounded px-1 py-1 text-xs focus:ring-1 focus:ring-blue-500">
+                            <option value="Asisten Ahli" ${item.jabatan === 'Asisten Ahli' ? 'selected' : ''}>Asisten Ahli</option>
+                            <option value="Lektor" ${item.jabatan === 'Lektor' ? 'selected' : ''}>Lektor</option>
+                            <option value="Lektor Kepala" ${item.jabatan === 'Lektor Kepala' ? 'selected' : ''}>Lektor Kepala</option>
+                            <option value="Guru Besar" ${item.jabatan === 'Guru Besar' || item.jabatan === 'Profesor' ? 'selected' : ''}>Guru Besar</option>
+                        </select>
+                    </td>
+                    <td class="py-2 px-1">
+                        <select onchange="updateEvalRow(${index}, 'predikat', this.value)" class="w-full border border-slate-200 rounded px-1 py-1 text-xs focus:ring-1 focus:ring-blue-500 font-medium">
+                            <option value="Sangat Baik" ${item.predikat === 'Sangat Baik' ? 'selected' : ''}>Sangat Baik (125%)</option>
+                            <option value="Baik" ${item.predikat === 'Baik' ? 'selected' : ''}>Baik (100%)</option>
+                            <option value="Cukup" ${item.predikat === 'Cukup' ? 'selected' : ''}>Cukup (75%)</option>
+                            <option value="Kurang" ${item.predikat === 'Kurang' ? 'selected' : ''}>Kurang (50%)</option>
+                            <option value="Sangat Kurang" ${item.predikat === 'Sangat Kurang' ? 'selected' : ''}>Sangat Kurang (25%)</option>
+                        </select>
+                    </td>
+                    <td class="py-2 px-1 text-center">
+                        <button onclick="deleteEvaluationRow(${index})" class="text-rose-500 hover:text-rose-700 hover:bg-rose-50 p-1.5 rounded-lg transition-colors">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addEvaluationRow() {
+            const nextYear = evaluations.length > 0 ? parseInt(evaluations[evaluations.length - 1].tahun) + 1 : 2026;
+            const lastJabatan = evaluations.length > 0 ? evaluations[evaluations.length - 1].jabatan : 'Lektor';
+            
+            evaluations.push({
+                id: Date.now(),
+                tahun: nextYear.toString(),
+                periodik: 'Januari - Desember',
+                bulan: 12,
+                jabatan: lastJabatan,
+                predikat: 'Sangat Baik'
+            });
+
+            renderEvaluationRows();
+            liveCalculate();
+        }
+
+        function deleteEvaluationRow(index) {
+            if (evaluations.length <= 1) {
+                showToast("Minimal harus ada 1 periode penilaian!", "info");
+                return;
+            }
+            evaluations.splice(index, 1);
+            renderEvaluationRows();
+            liveCalculate();
+        }
+
+        function updateEvalRow(index, field, value) {
+            evaluations[index][field] = value;
+            liveCalculate();
+        }
+
+        function liveCalculate() {
+            // Get form inputs
+            const nama = document.getElementById('pegawai_nama').value || '-';
+            const nip = document.getElementById('pegawai_nip').value || '-';
+            const karpeg = document.getElementById('pegawai_karpeg').value || '-';
+            const ttl = document.getElementById('pegawai_ttl').value || '-';
+            const jk = document.getElementById('pegawai_jk').value === 'L' ? 'Laki-Laki (L)' : 'Perempuan (P)';
+            const jkShort = document.getElementById('pegawai_jk').value === 'L' ? 'L' : 'P';
+            const pangkat = document.getElementById('pegawai_pangkat').value || '-';
+            const jabfung = document.getElementById('pegawai_jabfung').value || '-';
+            const ptn = document.getElementById('pegawai_ptn').value || '-';
+            const fakultas = document.getElementById('pegawai_fakultas').value || '-';
+
+            const no1 = document.getElementById('surat_no1').value || 'NOMOR < AGAR DIISI PT >';
+            const no2 = document.getElementById('surat_no2').value || 'NOMOR < AGAR DIISI PT >';
+            const no3 = document.getElementById('surat_no3').value || 'NOMOR < AGAR DIISI PT >';
+            const tempat = document.getElementById('surat_tempat').value || 'Jakarta';
+            const tanggal = document.getElementById('surat_tanggal').value || '< AGAR DIISI PT >';
+
+            const penilaiNama = document.getElementById('penilai_nama').value || '...';
+            const penilaiNip = document.getElementById('penilai_nip').value || '...';
+
+            const akIntegrasi = parseFloat(document.getElementById('ak_integrasi_dasar').value) || 0;
+            const targetPangkat = parseFloat(document.getElementById('target_ak_pangkat').value) || 150;
+            const targetJenjang = parseFloat(document.getElementById('target_ak_jenjang').value) || 450;
+            const targetPangkatNama = document.getElementById('target_pangkat_nama').value || 'LEKTOR KEPALA, PANGKAT/GOLONGAN RUANG PEMBINA TINGKAT I (IV/B)';
+
+            // Calculate Evaluation Rows & Format Periode
+            let totalAKKonversi = 0;
+            const tableBody1 = document.getElementById('v_konversi_table_body');
+            tableBody1.innerHTML = '';
+
+            let minYear = '2023', maxYear = '2025';
+            if (evaluations.length > 0) {
+                minYear = evaluations[0].tahun;
+                maxYear = evaluations[evaluations.length - 1].tahun;
+            }
+
+            evaluations.forEach((item) => {
+                const koef = JABATAN_COEFF[item.jabatan] || 25.0;
+                const percent = PREDIKAT_PERCENT[item.predikat] || 1.0;
+                const bln = parseInt(item.bulan) || 12;
+                const akObtained = koef * percent * (bln / 12);
+                totalAKKonversi += akObtained;
+
+                const tr = document.createElement('tr');
+                tr.className = "text-center font-bold uppercase";
+                tr.innerHTML = `
+                    <td class="border border-slate-900 p-2">${item.predikat}</td>
+                    <td class="border border-slate-900 p-2">${(percent * 100)}%</td>
+                    <td colspan="2" class="border border-slate-900 p-2 mono-font">${koef.toString().replace('.', ',')}</td>
+                    <td class="border border-slate-900 p-2 mono-font">${akObtained.toString().replace('.', ',')}</td>
+                `;
+                tableBody1.appendChild(tr);
+            });
+
+            const totalAKKumulatif = akIntegrasi + totalAKKonversi;
+
+            // Update Badges
+            document.getElementById('badge_integrasi').innerText = akIntegrasi.toFixed(3);
+            document.getElementById('badge_konversi').innerText = totalAKKonversi.toFixed(3);
+            document.getElementById('badge_total').innerText = totalAKKumulatif.toFixed(3);
+            document.getElementById('badge_periode_count').innerText = `${evaluations.length} Periode Evaluasi`;
+            document.getElementById('badge_status_pangkat').innerText = `Target: ${targetPangkat.toFixed(3)}`;
+
+            // Update Sheet 1 Preview bindings
+            document.getElementById('v_no1').innerText = no1.startsWith('NOMOR') ? no1 : `NOMOR ${no1}`;
+            document.getElementById('v_instansi').innerText = 'Kementerian Pendidikan Tinggi, Sains dan Teknologi';
+            document.getElementById('v_periode').innerText = minYear === maxYear ? `Januari ${minYear} s.d Desember ${maxYear}` : `Januari ${minYear} s.d Desember ${maxYear}`;
+            
+            document.getElementById('b_nama').innerText = nama;
+            document.getElementById('b_nip').innerText = nip;
+            document.getElementById('b_karpeg').innerText = karpeg;
+            document.getElementById('b_ttl').innerText = ttl;
+            document.getElementById('b_jk').innerText = jkShort;
+            document.getElementById('b_pangkat').innerText = pangkat;
+            document.getElementById('b_jabfung').innerText = jabfung;
+            document.getElementById('b_ptn').innerText = ptn;
+
+            document.getElementById('v_ttd_ditetapkan').innerText = `Ditetapkan di ${tempat}`;
+            document.getElementById('v_ttd_tempat_tgl').innerText = `Pada tanggal ${tanggal}`;
+            document.getElementById('v_ttd_nama').innerText = penilaiNama;
+            document.getElementById('v_ttd_nip').innerText = penilaiNip.startsWith('NIP') ? penilaiNip : `NIP ${penilaiNip}`;
+
+            // Update Sheet 2 Preview bindings
+            document.getElementById('v2_no').innerText = no2.startsWith('NOMOR') ? no2 : `NOMOR ${no2}`;
+            const baseYear = evaluations.length > 0 ? (parseInt(evaluations[0].tahun) - 1).toString() : '2022';
+            document.getElementById('v2_masa_penilaian').innerText = `${baseYear} s.d ${maxYear}`;
+            
+            document.getElementById('b2_nama').innerText = nama;
+            document.getElementById('b2_nip').innerText = nip;
+            document.getElementById('b2_karpeg').innerText = karpeg;
+            document.getElementById('b2_ttl').innerText = ttl;
+            document.getElementById('b2_jk').innerText = jkShort;
+            document.getElementById('b2_pangkat').innerText = pangkat;
+            document.getElementById('b2_jabfung').innerText = jabfung;
+            document.getElementById('b2_ptn').innerText = ptn;
+
+            // Render Table 2 Body for Akumulasi
+            const tableBody2 = document.getElementById('v2_akumulasi_table_body');
+            tableBody2.innerHTML = '';
+
+            // Row 1: AK Integrasi
+            const trIntegrasi = document.createElement('tr');
+            trIntegrasi.className = "text-center font-bold uppercase";
+            trIntegrasi.innerHTML = `
+                <td class="border border-slate-900 p-2 font-mono">${baseYear}</td>
+                <td class="border border-slate-900 p-2 font-bold text-left">AK INTEGRASI</td>
+                <td class="border border-slate-900 p-2"></td>
+                <td class="border border-slate-900 p-2"></td>
+                <td class="border border-slate-900 p-2"></td>
+                <td class="border border-slate-900 p-2 mono-font font-bold text-right">${akIntegrasi.toString().replace('.', ',')}</td>
+            `;
+            tableBody2.appendChild(trIntegrasi);
+
+            // Dynamic evaluation rows
+            evaluations.forEach((item) => {
+                const koef = JABATAN_COEFF[item.jabatan] || 25.0;
+                const percent = PREDIKAT_PERCENT[item.predikat] || 1.0;
+                const bln = parseInt(item.bulan) || 12;
+                const akObtained = koef * percent * (bln / 12);
+
+                const tr = document.createElement('tr');
+                tr.className = "text-center font-bold uppercase";
+                tr.innerHTML = `
+                    <td class="border border-slate-900 p-2 font-mono">${item.tahun}</td>
+                    <td class="border border-slate-900 p-2 font-semibold text-left">${item.periodik.toUpperCase()}</td>
+                    <td class="border border-slate-900 p-2">${item.predikat.toUpperCase()}</td>
+                    <td class="border border-slate-900 p-2">${(percent * 100)}%</td>
+                    <td class="border border-slate-900 p-2 mono-font">${koef.toString().replace('.', ',')}</td>
+                    <td class="border border-slate-900 p-2 mono-font text-right">${akObtained.toString().replace('.', ',')}</td>
+                `;
+                tableBody2.appendChild(tr);
+            });
+
+            // Summary Row
+            const trTotal = document.createElement('tr');
+            trTotal.className = "font-bold uppercase bg-slate-50";
+            trTotal.innerHTML = `
+                <td colspan="5" class="border border-slate-900 p-2 text-right tracking-wider font-extrabold text-xs">JUMLAH ANGKA KREDIT YANG DIPEROLEH</td>
+                <td class="border border-slate-900 p-2 text-right mono-font font-black text-sm text-slate-950">${totalAKKumulatif.toString().replace('.', ',')}</td>
+            `;
+            tableBody2.appendChild(trTotal);
+
+            // Signatures Sheet 2
+            document.getElementById('v2_ttd_ditetapkan').innerText = `Ditetapkan di ${tempat}`;
+            document.getElementById('v2_ttd_tempat_tgl').innerText = `Pada tanggal ${tanggal}`;
+            document.getElementById('v2_ttd_nama').innerText = penilaiNama;
+            document.getElementById('v2_ttd_nip').innerText = penilaiNip.startsWith('NIP') ? penilaiNip : `NIP ${penilaiNip}`;
+
+            // Update Sheet 3 Preview Bindings (100% REPLICA OF IMAGE_BA67C0.PNG)
+            document.getElementById('v3_no').innerText = no3.startsWith('NOMOR') ? no3 : `NOMOR ${no3}`;
+            document.getElementById('v3_masa_penilaian').innerText = `${baseYear} s.d ${maxYear}`;
+
+            document.getElementById('b3_nama').innerText = nama;
+            document.getElementById('b3_nip').innerText = nip;
+            document.getElementById('b3_karpeg').innerText = karpeg;
+            document.getElementById('b3_ttl').innerText = ttl;
+            document.getElementById('b3_jk').innerText = jkShort;
+            document.getElementById('b3_pangkat').innerText = pangkat;
+            document.getElementById('b3_jabfung').innerText = jabfung;
+            document.getElementById('b3_ptn').innerText = ptn;
+
+            // Sheet 3 Table Values
+            document.getElementById('v3_ak_konversi_lama').innerText = akIntegrasi > 0 ? akIntegrasi.toFixed(3).replace('.', ',') : '0';
+            document.getElementById('v3_ak_konversi_baru').innerText = totalAKKonversi.toFixed(3).replace('.', ',');
+            document.getElementById('v3_ak_konversi_jumlah').innerText = totalAKKumulatif.toFixed(3).replace('.', ',');
+
+            document.getElementById('v3_tot_lama').innerText = akIntegrasi > 0 ? akIntegrasi.toFixed(3).replace('.', ',') : '0';
+            document.getElementById('v3_tot_baru').innerText = totalAKKonversi.toFixed(3).replace('.', ',');
+            document.getElementById('v3_tot_jumlah').innerText = totalAKKumulatif.toFixed(3).replace('.', ',');
+
+            // Sub table limits
+            document.getElementById('v3_req_pangkat').innerText = targetPangkat.toString();
+            document.getElementById('v3_req_jenjang').innerText = targetJenjang.toString();
+
+            const diffPangkat = totalAKKumulatif - targetPangkat;
+            const diffJenjang = totalAKKumulatif - targetJenjang;
+
+            document.getElementById('v3_diff_pangkat').innerText = diffPangkat.toFixed(3).replace('.', ',');
+            document.getElementById('v3_diff_jenjang').innerText = diffJenjang.toFixed(3).replace('.', ',');
+
+            const statusDapat = totalAKKumulatif >= targetPangkat ? 'DAPAT' : 'TIDAK DAPAT';
+            document.getElementById('v3_decision_text').innerText = `${statusDapat} DIPERTIMBANGKAN UNTUK KENAIKAN PANGKAT/JENJANG JABATAN SETINGKAT LEBIH TINGGI MENJADI DOSEN JENJANG ${targetPangkatNama.toUpperCase()}`;
+
+            document.getElementById('v3_ttd_ditetapkan').innerText = `Ditetapkan di ${tempat}`;
+            document.getElementById('v3_ttd_tanggal').innerText = `Pada tanggal ${tanggal}`;
+            document.getElementById('v3_ttd_nama').innerText = penilaiNama;
+            document.getElementById('v3_ttd_nip').innerText = penilaiNip.startsWith('NIP') ? penilaiNip : `NIP ${penilaiNip}`;
+        }
+
+        async function generateExcelReport() {
+            showToast("Menyiapkan dokumen Excel presisi 3-Sheet...", "info");
+
+            const workbook = new ExcelJS.Workbook();
+            workbook.creator = 'Sistem Konversi AK Dosen - BKN & Kemdiktisaintek';
+            workbook.lastModifiedBy = 'Dosen Portal';
+            workbook.created = new Date();
+
+            // Extract Values
+            const nama = document.getElementById('pegawai_nama').value || '-';
+            const nip = document.getElementById('pegawai_nip').value || '-';
+            const karpeg = document.getElementById('pegawai_karpeg').value || '-';
+            const ttl = document.getElementById('pegawai_ttl').value || '-';
+            const jk = document.getElementById('pegawai_jk').value === 'L' ? 'L' : 'P';
+            const pangkat = document.getElementById('pegawai_pangkat').value || '-';
+            const jabfung = document.getElementById('pegawai_jabfung').value || '-';
+            const ptn = document.getElementById('pegawai_ptn').value || 'UNIVERSITAS GADJAH MADA';
+
+            const no1 = document.getElementById('surat_no1').value || 'NOMOR < AGAR DIISI PT >';
+            const no2 = document.getElementById('surat_no2').value || 'NOMOR < AGAR DIISI PT >';
+            const no3 = document.getElementById('surat_no3').value || 'NOMOR < AGAR DIISI PT >';
+            const tempat = document.getElementById('surat_tempat').value || 'Jakarta';
+            const tanggal = document.getElementById('surat_tanggal').value || '< AGAR DIISI PT >';
+
+            const penilaiNama = document.getElementById('penilai_nama').value || '...';
+            const penilaiNip = document.getElementById('penilai_nip').value || '...';
+
+            const akIntegrasi = parseFloat(document.getElementById('ak_integrasi_dasar').value) || 0;
+            const targetPangkat = parseFloat(document.getElementById('target_ak_pangkat').value) || 150;
+            const targetJenjang = parseFloat(document.getElementById('target_ak_jenjang').value) || 450;
+            const targetPangkatNama = document.getElementById('target_pangkat_nama').value || 'LEKTOR KEPALA, PANGKAT/GOLONGAN RUANG PEMBINA TINGKAT I (IV/B)';
+
+            let sumAK = 0;
+            evaluations.forEach(item => {
+                const koef = JABATAN_COEFF[item.jabatan] || 25.0;
+                const percent = PREDIKAT_PERCENT[item.predikat] || 1.0;
+                const bln = parseInt(item.bulan) || 12;
+                sumAK += koef * percent * (bln / 12);
+            });
+            const totalSumAK = akIntegrasi + sumAK;
+
+            const borderStyle = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+
+            const baseYearExcel = evaluations.length > 0 ? (parseInt(evaluations[0].tahun) - 1).toString() : '2022';
+            const maxYear = evaluations.length > 0 ? evaluations[evaluations.length - 1].tahun : '2025';
+
+            // -------------------------------------------------------------
+            // SHEET 1: KONVERSI PREDIKAT KINERJA
+            // -------------------------------------------------------------
+            const sheet1 = workbook.addWorksheet('1. Konversi Predikat');
+            sheet1.columns = [{ width: 6 }, { width: 30 }, { width: 16 }, { width: 16 }, { width: 22 }];
+
+            sheet1.addRow([]);
+            const s1_h1 = sheet1.addRow(['KEMENTERIAN PENDIDIKAN TINGGI, SAINS DAN TEKNOLOGI']);
+            const s1_h2 = sheet1.addRow(['REPUBLIK INDONESIA']);
+            [s1_h1, s1_h2].forEach(r => {
+                sheet1.mergeCells(`A${r.number}:E${r.number}`);
+                const c = sheet1.getCell(`A${r.number}`);
+                c.alignment = { horizontal: 'center' };
+                c.font = { bold: true, size: 11, name: 'Calibri' };
+            });
+
+            sheet1.addRow([]);
+            const s1_t1 = sheet1.addRow(['KONVERSI PREDIKAT KINERJA KE ANGKA KREDIT']);
+            const s1_t2 = sheet1.addRow(['JABATAN FUNGSIONAL DOSEN']);
+            const s1_t3 = sheet1.addRow([no1.startsWith('NOMOR') ? no1 : `NOMOR ${no1}`]);
+            [s1_t1, s1_t2, s1_t3].forEach(r => {
+                sheet1.mergeCells(`A${r.number}:E${r.number}`);
+                const c = sheet1.getCell(`A${r.number}`);
+                c.alignment = { horizontal: 'center' };
+                c.font = { bold: true, size: 10, name: 'Calibri' };
+            });
+
+            // -------------------------------------------------------------
+            // SHEET 2: AKUMULASI ANGKA KREDIT
+            // -------------------------------------------------------------
+            const sheet2 = workbook.addWorksheet('2. Akumulasi Angka Kredit');
+            sheet2.columns = [{ width: 8 }, { width: 28 }, { width: 16 }, { width: 14 }, { width: 14 }, { width: 22 }];
+
+            sheet2.addRow([]);
+            const s2_h1 = sheet2.addRow(['KEMENTERIAN PENDIDIKAN TINGGI, SAINS DAN TEKNOLOGI']);
+            const s2_h2 = sheet2.addRow(['REPUBLIK INDONESIA']);
+            [s2_h1, s2_h2].forEach(r => {
+                sheet2.mergeCells(`A${r.number}:F${r.number}`);
+                const c = sheet2.getCell(`A${r.number}`);
+                c.alignment = { horizontal: 'center' };
+                c.font = { bold: true, size: 11, name: 'Calibri' };
+            });
+
+            sheet2.addRow([]);
+            const s2_t1 = sheet2.addRow(['AKUMULASI ANGKA KREDIT']);
+            const s2_t2 = sheet2.addRow(['JABATAN FUNGSIONAL DOSEN']);
+            const s2_t3 = sheet2.addRow([no2.startsWith('NOMOR') ? no2 : `NOMOR ${no2}`]);
+            [s2_t1, s2_t2, s2_t3].forEach(r => {
+                sheet2.mergeCells(`A${r.number}:F${r.number}`);
+                const c = sheet2.getCell(`A${r.number}`);
+                c.alignment = { horizontal: 'center' };
+                c.font = { bold: true, size: 10, name: 'Calibri' };
+            });
+
+            // -------------------------------------------------------------
+            // SHEET 3: PENETAPAN PAK (100% ACCURATE TO IMAGE_BA67C0.PNG)
+            // -------------------------------------------------------------
+            const sheet3 = workbook.addWorksheet('3. Penetapan PAK');
+            sheet3.columns = [
+                { width: 6 },  // A (Col 1 / No)
+                { width: 34 }, // B (Col 2 / Penetapan AK)
+                { width: 16 }, // C (Col 3 / Lama)
+                { width: 16 }, // D (Col 4 / Baru)
+                { width: 16 }, // E (Col 5 / Jumlah)
+                { width: 32 }  // F (Col 6 / Keterangan)
+            ];
+
+            sheet3.addRow([]);
+            const s3_h1 = sheet3.addRow(['KEMENTERIAN PENDIDIKAN TINGGI, SAINS DAN TEKNOLOGI']);
+            const s3_h2 = sheet3.addRow(['REPUBLIK INDONESIA']);
+            [s3_h1, s3_h2].forEach(r => {
+                sheet3.mergeCells(`A${r.number}:F${r.number}`);
+                const c = sheet3.getCell(`A${r.number}`);
+                c.alignment = { horizontal: 'center' };
+                c.font = { bold: true, size: 11, name: 'Calibri' };
+            });
+
+            sheet3.addRow([]);
+            const s3_t1 = sheet3.addRow(['PENETAPAN ANGKA KREDIT']);
+            const s3_t2 = sheet3.addRow(['JABATAN FUNGSIONAL DOSEN']);
+            const s3_t3 = sheet3.addRow([no3.startsWith('NOMOR') ? no3 : `NOMOR ${no3}`]);
+            [s3_t1, s3_t2, s3_t3].forEach(r => {
+                sheet3.mergeCells(`A${r.number}:F${r.number}`);
+                const c = sheet3.getCell(`A${r.number}`);
+                c.alignment = { horizontal: 'center' };
+                c.font = { bold: true, size: 10, name: 'Calibri' };
+            });
+
+            sheet3.addRow([]);
+
+            // Metadata Instansi & Masa Penilaian
+            const s3_m1 = sheet3.addRow(['Instansi :', '', '', '', 'Masa Penilaian :']);
+            const s3_m2 = sheet3.addRow(['KEMENTERIAN PENDIDIKAN TINGGI, SAINS DAN TEKNOLOGI', '', '', '', `${baseYearExcel} s.d ${maxYear}`]);
+            s3_m1.getCell(1).font = { bold: true, size: 10, name: 'Calibri' };
+            s3_m1.getCell(5).font = { bold: true, size: 10, name: 'Calibri' };
+            s3_m2.getCell(1).font = { bold: true, size: 10, name: 'Calibri' };
+            s3_m2.getCell(5).font = { size: 10, name: 'Calibri' };
+
+            sheet3.addRow([]);
+
+            // Section I: KETERANGAN PERORANGAN
+            const s3_sec1 = sheet3.addRow(['I', 'KETERANGAN PERORANGAN']);
+            sheet3.mergeCells(`B${s3_sec1.number}:F${s3_sec1.number}`);
+            s3_sec1.getCell(1).alignment = { horizontal: 'center' };
+            s3_sec1.getCell(1).font = { bold: true, size: 10, name: 'Calibri' };
+            s3_sec1.getCell(2).font = { bold: true, size: 10, name: 'Calibri' };
+            s3_sec1.eachCell(c => c.border = borderStyle);
+
+            const bioData3 = [
+                [1, 'Nama', nama.toUpperCase()],
+                [2, 'NIP', `'${nip}`],
+                [3, 'Nomor Seri Karpeg', karpeg],
+                [4, 'Tempat/Tanggal Lahir', ttl],
+                [5, 'Jenis Kelamin', jk],
+                [6, 'Pangkat/Golongan Ruang/TMT', pangkat],
+                [7, 'Jabatan/TMT', jabfung],
+                [8, 'Unit Kerja', ptn]
+            ];
+
+            bioData3.forEach(item => {
+                const r = sheet3.addRow(['', item[0], item[1]]);
+                sheet3.mergeCells(`C${r.number}:F${r.number}`);
+                r.getCell(2).alignment = { horizontal: 'center' };
+                [2, 3, 4, 5, 6].forEach(colIdx => {
+                    r.getCell(colIdx).font = { size: 10, name: 'Calibri' };
+                    r.getCell(colIdx).border = borderStyle;
+                });
+                r.getCell(2).font = { bold: true, size: 10, name: 'Calibri' };
+            });
+
+            // Section II: HASIL PENILAIAN ANGKA KREDIT
+            const s3_sec2 = sheet3.addRow(['HASIL PENILAIAN ANGKA KREDIT']);
+            sheet3.mergeCells(`A${s3_sec2.number}:F${s3_sec2.number}`);
+            s3_sec2.getCell(1).alignment = { horizontal: 'center' };
+            s3_sec2.getCell(1).font = { bold: true, size: 10, name: 'Calibri' };
+            s3_sec2.eachCell(c => c.border = borderStyle);
+
+            const s3_subH1 = sheet3.addRow(['II', 'PENETAPAN ANGKA KREDIT', 'LAMA', 'BARU', 'JUMLAH', 'KETERANGAN']);
+            s3_subH1.eachCell(c => {
+                c.border = borderStyle;
+                c.alignment = { horizontal: 'center', vertical: 'middle' };
+                c.font = { bold: true, size: 9, name: 'Calibri' };
+            });
+            s3_subH1.getCell(2).alignment = { horizontal: 'left' };
+
+            const s3_numRow = sheet3.addRow([1, 2, 3, 4, 5, 6]);
+            s3_numRow.eachCell(c => {
+                c.border = borderStyle;
+                c.alignment = { horizontal: 'center' };
+                c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE2E8F0' } };
+                c.font = { bold: true, size: 9, name: 'Calibri' };
+            });
+
+            // Table Rows Penetapan AK
+            const pak_rows_data = [
+                [1, 'AK Dasar yang diberikan', '-', '-', 0, ''],
+                [2, 'AK Integrasi', '-', '-', 0, 'Sudah menjadi satu dengan AK Konversi'],
+                [3, 'AK Penyesuaian / Penyelarasan', '-', '-', 0, ''],
+                [4, 'AK Konversi', akIntegrasi, sumAK, totalSumAK, ''],
+                [5, 'AK yang diperoleh dari peningkatan pendidikan', '-', '-', 0, ''],
+                [6, '', '-', '-', 0, '']
+            ];
+
+            pak_rows_data.forEach(rd => {
+                const r = sheet3.addRow([rd[0], rd[1], rd[2], rd[3], rd[4], rd[5]]);
+                r.getCell(1).alignment = { horizontal: 'center' };
+                r.getCell(2).font = { bold: true };
+                r.getCell(3).alignment = { horizontal: typeof rd[2] === 'number' ? 'right' : 'center' };
+                r.getCell(4).alignment = { horizontal: typeof rd[3] === 'number' ? 'right' : 'center' };
+                r.getCell(5).alignment = { horizontal: 'right' };
+
+                if (typeof rd[2] === 'number') r.getCell(3).numFmt = '0.000';
+                if (typeof rd[3] === 'number') r.getCell(4).numFmt = '0.000';
+                if (typeof rd[4] === 'number') r.getCell(5).numFmt = '0.000';
+
+                r.eachCell(c => {
+                    c.border = borderStyle;
+                    c.font = { size: 10, name: 'Calibri' };
+                });
+            });
+
+            // JUMLAH ANGKA KREDIT Row
+            const r_tot3 = sheet3.addRow(['JUMLAH ANGKA KREDIT', '', akIntegrasi, sumAK, totalSumAK, '']);
+            sheet3.mergeCells(`A${r_tot3.number}:B${r_tot3.number}`);
+            r_tot3.getCell(1).alignment = { horizontal: 'left' };
+            r_tot3.getCell(3).alignment = { horizontal: 'right' };
+            r_tot3.getCell(4).alignment = { horizontal: 'right' };
+            r_tot3.getCell(5).alignment = { horizontal: 'right' };
+            r_tot3.getCell(3).numFmt = '0.000';
+            r_tot3.getCell(4).numFmt = '0.000';
+            r_tot3.getCell(5).numFmt = '0.000';
+            r_tot3.eachCell(c => {
+                c.border = borderStyle;
+                c.font = { bold: true, size: 10, name: 'Calibri' };
+            });
+
+            // Sub-Table: Thresholds and Kelebihan/Kekurangan
+            const r_lim_hdr = sheet3.addRow(['Keterangan', '', 'Pangkat', '', 'Jenjang Jabatan', '']);
+            sheet3.mergeCells(`A${r_lim_hdr.number}:B${r_lim_hdr.number}`);
+            sheet3.mergeCells(`C${r_lim_hdr.number}:D${r_lim_hdr.number}`);
+            sheet3.mergeCells(`E${r_lim_hdr.number}:F${r_lim_hdr.number}`);
+            r_lim_hdr.eachCell(c => {
+                c.border = borderStyle;
+                c.alignment = { horizontal: 'center' };
+                c.font = { bold: true, size: 10, name: 'Calibri' };
+            });
+
+            const diffP = totalSumAK - targetPangkat;
+            const diffJ = totalSumAK - targetJenjang;
+
+            const r_lim_1 = sheet3.addRow(['Angka Kredit Minimal yang harus dipenuhi untuk kenaikan pangkat / jenjang', '', targetPangkat, '', targetJenjang, '']);
+            const r_lim_2 = sheet3.addRow(['Kelebihan/Kekurangan Angka Kredit yang harus dicapai untuk kenaikan pangkat', '', diffP, '', '-', '']);
+            const r_lim_3 = sheet3.addRow(['Kelebihan/Kekurangan Angka Kredit yang harus dicapai untuk kenaikan jenjang', '', '-', '', diffJ, '']);
+
+            [r_lim_1, r_lim_2, r_lim_3].forEach(r => {
+                sheet3.mergeCells(`A${r.number}:B${r.number}`);
+                sheet3.mergeCells(`C${r.number}:D${r.number}`);
+                sheet3.mergeCells(`E${r.number}:F${r.number}`);
+                r.getCell(1).font = { size: 9, name: 'Calibri' };
+                r.getCell(3).alignment = { horizontal: 'center' };
+                r.getCell(5).alignment = { horizontal: 'center' };
+                if (typeof r.getCell(3).value === 'number') r.getCell(3).numFmt = '0.000';
+                if (typeof r.getCell(5).value === 'number') r.getCell(5).numFmt = '0.000';
+                r.eachCell(c => c.border = borderStyle);
+            });
+
+            sheet3.addRow([]);
+
+            // Recommendation text block
+            const statusDapatExcel = totalSumAK >= targetPangkat ? 'DAPAT' : 'TIDAK DAPAT';
+            const decisionText = `${statusDapatExcel} DIPERTIMBANGKAN UNTUK KENAIKAN PANGKAT/JENJANG JABATAN SETINGKAT LEBIH TINGGI MENJADI DOSEN JENJANG ${targetPangkatNama.toUpperCase()}`;
+            const r_dec = sheet3.addRow([decisionText]);
+            sheet3.mergeCells(`A${r_dec.number}:F${r_dec.number}`);
+            r_dec.getCell(1).alignment = { horizontal: 'center', wrapText: true };
+            r_dec.getCell(1).font = { bold: true, size: 10, name: 'Calibri' };
+
+            sheet3.addRow([]);
+
+            // Signature block Sheet 3
+            const s3_sig1 = sheet3.addRow(['ASLI Penetapan Angka Kredit untuk', '', '', '', `Ditetapkan di ${tempat}`]);
+            const s3_sig2 = sheet3.addRow(['Jabatan Fungsional yang bersangkutan', '', '', '', `Pada tanggal ${tanggal}`]);
+            sheet3.addRow([]);
+            const s3_sig3 = sheet3.addRow(['', '', '', '', 'Pejabat Penilai Kinerja,']);
+
+            [s3_sig1, s3_sig2, s3_sig3].forEach(r => {
+                r.getCell(1).font = { size: 10, name: 'Calibri' };
+                r.getCell(5).font = { size: 10, name: 'Calibri' };
+            });
+            s3_sig3.getCell(5).font = { bold: true, size: 10, name: 'Calibri' };
+
+            sheet3.addRow([]); sheet3.addRow([]);
+            const s3_sig4 = sheet3.addRow(['', '', '', '', penilaiNama]);
+            const s3_sig5 = sheet3.addRow(['', '', '', '', penilaiNip.startsWith('NIP') ? penilaiNip : `NIP ${penilaiNip}`]);
+
+            [s3_sig4, s3_sig5].forEach(r => {
+                r.getCell(5).font = { size: 10, name: 'Calibri' };
+            });
+
+            // Footnote Tembusan Sheet 3
+            sheet3.addRow([]);
+            sheet3.addRow(['Tembusan disampaikan kepada:']).getCell(1).font = { size: 9, name: 'Calibri' };
+            sheet3.addRow(['1 Pejabat Fungsional yang bersangkutan']).getCell(1).font = { size: 9, name: 'Calibri' };
+            sheet3.addRow(['2 ...']).getCell(1).font = { size: 9, name: 'Calibri' };
+            sheet3.addRow(['3 dst']).getCell(1).font = { size: 9, name: 'Calibri' };
+
+            // Export Buffer and Download Link
+            const buffer = await workbook.xlsx.writeBuffer();
+            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const safeName = nama.replace(/[^a-zA-Z0-9]/g, '_');
+            a.download = `Template_Konversi_AK_${safeName}.xlsx`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+
+            showToast("File Template_Konversi.xlsx berhasil diunduh!", "success");
+        }
+    </script>
+</body>
+</html>
